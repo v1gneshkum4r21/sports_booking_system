@@ -1,0 +1,102 @@
+{% extends 'base.html' %}
+
+{% block title %}Facilities - Sports Booking System{% endblock %}
+
+{% block content %}
+<div class="hero-section text-center py-4 mb-5">
+    <div class="container">
+        <h1 class="display-4 fw-bold">Our Sports Facilities</h1>
+        <p class="lead">Find and book your perfect sports venue</p>
+    </div>
+</div>
+
+<div class="container mb-5">
+    <!-- Search Form -->
+    <div class="search-section mb-5">
+        <form action="{% url 'facilities:facility_search' %}" method="get" class="search-form">
+            <div class="input-group">
+                <input type="text" name="q" class="form-control form-control-lg" 
+                       placeholder="Search facilities..." value="{{ request.GET.q }}">
+                <button type="submit" class="btn btn-primary px-4">
+                    <i class="fas fa-search"></i> Search
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Facilities Grid -->
+    <div class="row g-4">
+        {% for facility in facilities %}
+        <div class="col-md-4">
+            <div class="facility-card card h-100 shadow-sm">
+                {% if facility.image %}
+                <div class="facility-image-wrapper">
+                    <img src="{{ facility.image.url }}" class="card-img-top" alt="{{ facility.name }}">
+                </div>
+                {% endif %}
+                <div class="card-body">
+                    <h5 class="card-title">{{ facility.name }}</h5>
+                    <p class="card-text text-muted">{{ facility.description|truncatewords:20 }}</p>
+                    <div class="facility-info">
+                        <span><i class="fas fa-clock"></i> {{ facility.opening_time }} - {{ facility.closing_time }}</span>
+                    </div>
+                </div>
+                <div class="card-footer bg-transparent border-0 pb-3">
+                    <a href="{% url 'facilities:detail' facility.id %}" class="btn btn-outline-primary w-100">
+                        <i class="fas fa-info-circle"></i> View Details
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12 text-center">
+            <div class="alert alert-info">
+                <i class="fas fa-info-circle me-2"></i>
+                No facilities found matching your search.
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+{% block extra_css %}
+<style>
+.hero-section {
+    background: linear-gradient(135deg, #6B73FF 0%, #000DFF 100%);
+    color: white;
+    margin-top: -1.5rem;
+}
+
+.search-form {
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.facility-card {
+    border: none;
+    transition: transform 0.3s ease;
+}
+
+.facility-card:hover {
+    transform: translateY(-5px);
+}
+
+.facility-image-wrapper {
+    height: 200px;
+    overflow: hidden;
+}
+
+.facility-image-wrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.facility-info {
+    color: #6c757d;
+    font-size: 0.9rem;
+    margin: 1rem 0;
+}
+</style>
+{% endblock %}
+{% endblock %} 

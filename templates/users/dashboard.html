@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <h2>Dashboard</h2>
+    <div class="row mt-4">
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">My Bookings</h5>
+                    <p class="card-text">Total Bookings: {{ bookings_count }}</p>
+                    <a href="{% url 'my_bookings' %}" class="btn btn-primary">View Bookings</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Facilities</h5>
+                    <p class="card-text">Available Facilities: {{ facilities_count }}</p>
+                    <a href="{% url 'facilities' %}" class="btn btn-primary">Browse Facilities</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Profile</h5>
+                    <p class="card-text">Update your information</p>
+                    <a href="{% url 'profile' %}" class="btn btn-primary">Edit Profile</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

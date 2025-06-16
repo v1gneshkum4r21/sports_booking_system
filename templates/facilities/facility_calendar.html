@@ -1,0 +1,132 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="calendar-header py-4 mb-4">
+    <div class="container">
+        <h1 class="display-5 fw-bold text-white mb-0">{{ facility.name }} Calendar</h1>
+    </div>
+</div>
+
+<div class="container mb-5">
+    <div class="row g-4">
+        <div class="col-lg-9">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h3 class="card-title mb-0">
+                        <i class="fas fa-calendar"></i> Availability Calendar
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered calendar-table">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Time</th>
+                                    {% for day in week_days %}
+                                    <th class="text-center">{{ day }}</th>
+                                    {% endfor %}
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for time_slot in time_slots %}
+                                <tr>
+                                    <td class="time-slot">{{ time_slot }}</td>
+                                    {% for day in week_days %}
+                                    <td class="slot-cell {% if is_booked %}booked{% else %}available{% endif %}">
+                                        {% if is_booked %}
+                                        <span class="badge bg-danger">Booked</span>
+                                        {% else %}
+                                        <a href="{% url 'make_booking' facility.id %}?date={{ day }}&time={{ time_slot }}" 
+                                           class="btn btn-sm btn-outline-primary book-btn">
+                                            <i class="fas fa-plus"></i> Book
+                                        </a>
+                                        {% endif %}
+                                    </td>
+                                    {% endfor %}
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-3">
+            <div class="card facility-info-card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h3 class="card-title mb-0">
+                        <i class="fas fa-info-circle"></i> Facility Info
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <div class="info-item">
+                        <i class="fas fa-dollar-sign text-primary"></i>
+                        <strong>Price:</strong> ${{ facility.price_per_hour }}/hour
+                    </div>
+                    <div class="info-item">
+                        <i class="fas fa-clock text-primary"></i>
+                        <strong>Hours:</strong> {{ facility.operating_hours }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% block extra_css %}
+<style>
+.calendar-header {
+    background: linear-gradient(135deg, #6B73FF 0%, #000DFF 100%);
+    margin-top: -1.5rem;
+}
+
+.calendar-table {
+    margin-bottom: 0;
+}
+
+.time-slot {
+    font-weight: bold;
+    white-space: nowrap;
+}
+
+.slot-cell {
+    text-align: center;
+    vertical-align: middle;
+    height: 60px;
+}
+
+.booked {
+    background-color: rgba(220, 53, 69, 0.1);
+}
+
+.available {
+    background-color: rgba(40, 167, 69, 0.1);
+}
+
+.book-btn {
+    transition: all 0.3s ease;
+}
+
+.book-btn:hover {
+    transform: scale(1.1);
+}
+
+.info-item {
+    margin-bottom: 1rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #eee;
+}
+
+.info-item:last-child {
+    margin-bottom: 0;
+    padding-bottom: 0;
+    border-bottom: none;
+}
+
+.info-item i {
+    margin-right: 0.5rem;
+}
+</style>
+{% endblock %}
+{% endblock %} 

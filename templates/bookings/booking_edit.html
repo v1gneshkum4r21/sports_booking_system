@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+<div class="edit-header py-4 mb-4">
+    <div class="container">
+        <h1 class="display-5 fw-bold text-white mb-0">Edit Booking</h1>
+    </div>
+</div>
+
+<div class="container mb-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card edit-card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0"><i class="fas fa-edit me-2"></i>Update Booking Details</h4>
+                </div>
+                <div class="card-body">
+                    <form method="post" class="edit-form">
+                        {% csrf_token %}
+                        {{ form|crispy }}
+                        <div class="form-actions mt-4">
+                            <button type="submit" class="btn btn-primary btn-lg me-2">
+                                <i class="fas fa-save me-2"></i>Update Booking
+                            </button>
+                            <a href="{% url 'bookings:booking_list' %}" class="btn btn-outline-secondary btn-lg">
+                                <i class="fas fa-times me-2"></i>Cancel
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% block extra_css %}
+<style>
+.edit-header {
+    background: linear-gradient(135deg, #6B73FF 0%, #000DFF 100%);
+    margin-top: -1.5rem;
+}
+
+.edit-card {
+    border: none;
+    border-radius: 10px;
+}
+
+.form-actions {
+    border-top: 1px solid #eee;
+    padding-top: 1.5rem;
+}
+</style>
+{% endblock %}
+{% endblock %} 

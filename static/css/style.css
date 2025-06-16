@@ -1,0 +1,69 @@
+/* Add custom styles here */
+.facility-card {
+    transition: transform 0.2s;
+}
+
+.facility-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.booking-status-pending {
+    color: #ffc107;
+}
+
+.booking-status-confirmed {
+    color: #28a745;
+}
+
+.booking-status-cancelled {
+    color: #dc3545;
+}
+
+.booking-card {
+    transition: transform 0.2s;
+}
+
+.booking-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.card-header.bg-success {
+    background-color: #28a745 !important;
+}
+
+.card-header.bg-warning {
+    background-color: #ffc107 !important;
+    color: #212529 !important;
+}
+
+.card-header.bg-danger {
+    background-color: #dc3545 !important;
+}
+
+.qr-code-container {
+    background: #f8f9fa;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.qr-code-container img {
+    border: 1px solid #dee2e6;
+    padding: 5px;
+    background: white;
+}
+
+.profile-card {
+    margin-top: 20px;
+}
+
+.profile-card .card-header {
+    background-color: #007bff;
+    color: white;
+}
+
+.profile-card .list-group-item {
+    border: none;
+    padding: 10px 15px;
+}

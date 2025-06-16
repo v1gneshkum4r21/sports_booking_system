@@ -1,0 +1,98 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+<div class="booking-form-header py-4 mb-4">
+    <div class="container">
+        <h1 class="display-5 fw-bold text-white mb-0">Book {{ facility.name }}</h1>
+    </div>
+</div>
+
+<div class="container mb-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card booking-form-card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0"><i class="fas fa-calendar-plus me-2"></i>Make a Booking</h4>
+                </div>
+                <div class="card-body">
+                    <form method="post" class="booking-form">
+                        {% csrf_token %}
+                        
+                        {% if form.non_field_errors %}
+                        <div class="alert alert-danger">
+                            <i class="fas fa-exclamation-circle me-2"></i>
+                            {% for error in form.non_field_errors %}
+                            {{ error }}
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+
+                        {% for field in form %}
+                        <div class="form-group mb-3">
+                            <label for="{{ field.id_for_label }}" class="form-label">
+                                <i class="fas fa-{{ field.name|lower }}-alt me-2"></i>{{ field.label }}
+                            </label>
+                            {{ field|add_class:"form-control" }}
+                            {% if field.errors %}
+                            <div class="invalid-feedback d-block">
+                                {% for error in field.errors %}
+                                {{ error }}
+                                {% endfor %}
+                            </div>
+                            {% endif %}
+                            {% if field.help_text %}
+                            <small class="form-text text-muted">{{ field.help_text }}</small>
+                            {% endif %}
+                        </div>
+                        {% endfor %}
+
+                        <div class="form-actions mt-4">
+                            <button type="submit" class="btn btn-primary btn-lg me-2">
+                                <i class="fas fa-check me-2"></i>Confirm Booking
+                            </button>
+                            <a href="{% url 'facilities:list' %}" class="btn btn-outline-secondary btn-lg">
+                                <i class="fas fa-times me-2"></i>Cancel
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% block extra_css %}
+<style>
+.booking-form-header {
+    background: linear-gradient(135deg, #6B73FF 0%, #000DFF 100%);
+    margin-top: -1.5rem;
+}
+
+.booking-form-card {
+    border: none;
+    border-radius: 10px;
+}
+
+.form-group label {
+    font-weight: 500;
+    color: #333;
+}
+
+.form-control {
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+}
+
+.form-control:focus {
+    border-color: #6B73FF;
+    box-shadow: 0 0 0 0.2rem rgba(107, 115, 255, 0.25);
+}
+
+.form-actions {
+    border-top: 1px solid #eee;
+    padding-top: 1.5rem;
+}
+</style>
+{% endblock %}
+{% endblock %} 

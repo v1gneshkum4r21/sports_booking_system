@@ -1,0 +1,107 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-10">
+            <div class="card border-0 shadow-lg">
+                <div class="row g-0">
+                    <!-- Left side - Image/Banner -->
+                    <div class="col-md-4 bg-primary text-white p-4 d-flex flex-column justify-content-center">
+                        <div class="text-center">
+                            <h2 class="display-6 mb-4">Welcome!</h2>
+                            <p class="lead">Join our sports community today</p>
+                            <hr class="my-4 bg-white">
+                            <p class="small">Access all sports facilities with ease</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Right side - Form -->
+                    <div class="col-md-8">
+                        <div class="card-body p-5">
+                            <h3 class="card-title text-primary mb-4">Student Registration</h3>
+                            <form method="post" class="needs-validation">
+                                {% csrf_token %}
+                                {{ form|crispy }}
+                                {{ profile_form|crispy }}
+                                
+                                <div class="mt-4">
+                                    <div class="d-grid gap-2">
+                                        <button type="submit" class="btn btn-primary btn-lg">
+                                            <i class="fas fa-user-plus me-2"></i>Register
+                                        </button>
+                                    </div>
+                                    
+                                    <div class="d-flex justify-content-between mt-3">
+                                        <a href="{% url 'users:login' %}" class="btn btn-link text-secondary">
+                                            <i class="fas fa-sign-in-alt me-1"></i>Already have an account?
+                                        </a>
+                                        <a href="{% url 'home' %}" class="btn btn-outline-primary">
+                                            <i class="fas fa-home me-1"></i>Back to Home
+                                        </a>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Additional Information Cards -->
+            <div class="row mt-4">
+                <div class="col-md-4">
+                    <div class="card border-0 shadow-sm h-100">
+                        <div class="card-body text-center">
+                            <i class="fas fa-shield-alt text-primary fa-2x mb-3"></i>
+                            <h5 class="card-title">Secure Registration</h5>
+                            <p class="card-text small text-muted">Your data is safe and protected</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card border-0 shadow-sm h-100">
+                        <div class="card-body text-center">
+                            <i class="fas fa-bolt text-primary fa-2x mb-3"></i>
+                            <h5 class="card-title">Quick Process</h5>
+                            <p class="card-text small text-muted">Register in less than 2 minutes</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card border-0 shadow-sm h-100">
+                        <div class="card-body text-center">
+                            <i class="fas fa-headset text-primary fa-2x mb-3"></i>
+                            <h5 class="card-title">24/7 Support</h5>
+                            <p class="card-text small text-muted">We're here to help anytime</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add Font Awesome for icons -->
+{% block extra_css %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+<style>
+    .card {
+        border-radius: 15px;
+        overflow: hidden;
+    }
+    .btn-primary {
+        border-radius: 8px;
+    }
+    .btn-outline-primary {
+        border-radius: 8px;
+    }
+    .shadow-lg {
+        box-shadow: 0 1rem 3rem rgba(0,0,0,.175)!important;
+    }
+    .bg-primary {
+        background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 100%);
+    }
+</style>
+{% endblock %}
+{% endblock %} 

@@ -1,0 +1,212 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <!-- Left Column -->
+        <div class="col-md-4">
+            <!-- Profile Card -->
+            <div class="card mb-4 shadow-sm">
+                <div class="card-body text-center">
+                    <div class="bg-primary text-white py-4 mx-n3 mt-n3 rounded-top">
+                        <i class="fas fa-user-circle fa-4x mb-3"></i>
+                        <h3>{{ user.get_full_name }}</h3>
+                        <p class="mb-0">@{{ user.username }}</p>
+                    </div>
+                    
+                    <div class="mt-4">
+                        {% if user.profile.phone %}
+                            <p><i class="fas fa-phone me-2"></i>{{ user.profile.phone }}</p>
+                        {% else %}
+                            <p class="text-muted">Not provided</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stats Card -->
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">Quick Stats</h5>
+                    <div class="row text-center mt-3">
+                        <div class="col-6">
+                            <h2>{{ total_bookings }}</h2>
+                            <p class="text-muted">Total Bookings</p>
+                        </div>
+                        <div class="col-6">
+                            <h2>{{ active_bookings }}</h2>
+                            <p class="text-muted">Active Bookings</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Column -->
+        <div class="col-md-8">
+            <!-- Profile Settings -->
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h4 class="mb-0">Profile Settings</h4>
+                        <button class="btn btn-primary" id="editToggle">Edit Profile</button>
+                    </div>
+
+                    <!-- View Mode -->
+                    <div id="profileView">
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label text-muted">First Name</label>
+                                <p>{{ user.first_name }}</p>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label text-muted">Last Name</label>
+                                <p>{{ user.last_name }}</p>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label text-muted">Course</label>
+                                <p>{{ user.profile.course|default:"Not provided" }}</p>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label text-muted">Year of Study</label>
+                                <p>{{ user.profile.year_of_study|default:"Not provided" }}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Edit Mode -->
+                    <div id="profileEdit" style="display: none;">
+                        <form method="post" id="profileForm">
+                            {% csrf_token %}
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">First Name</label>
+                                    <input type="text" name="first_name" class="form-control" value="{{ user.first_name }}">
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Last Name</label>
+                                    <input type="text" name="last_name" class="form-control" value="{{ user.last_name }}">
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Course</label>
+                                    <input type="text" name="course" class="form-control" value="{{ user.profile.course }}">
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Year of Study</label>
+                                    <input type="number" name="year_of_study" class="form-control" value="{{ user.profile.year_of_study }}" min="1" max="6">
+                                </div>
+                            </div>
+                            <div class="text-end mt-3">
+                                <button type="button" class="btn btn-secondary me-2" id="cancelEdit">Cancel</button>
+                                <button type="submit" class="btn btn-primary">Save Changes</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Activity -->
+            <div class="card shadow-sm mt-4">
+                <div class="card-body">
+                    <h5 class="card-title mb-4">Recent Activity</h5>
+                    {% for booking in recent_bookings %}
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="flex-grow-1">
+                                <h6 class="mb-1">{{ booking.facility.name }}</h6>
+                                <small class="text-muted">{{ booking.date }} at {{ booking.time_slot }}</small>
+                            </div>
+                            <span class="badge bg-{{ booking.status_color }}">{{ booking.status }}</span>
+                        </div>
+                    {% empty %}
+                        <p class="text-muted">No recent bookings found.</p>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const profileView = document.getElementById('profileView');
+    const profileEdit = document.getElementById('profileEdit');
+    const editButton = document.getElementById('editToggle');
+    const cancelButton = document.getElementById('cancelEdit');
+    const profileForm = document.getElementById('profileForm');
+
+    editButton.addEventListener('click', function() {
+        profileView.style.display = 'none';
+        profileEdit.style.display = 'block';
+    });
+
+    cancelButton.addEventListener('click', function() {
+        profileView.style.display = 'block';
+        profileEdit.style.display = 'none';
+    });
+
+    profileForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const formData = new FormData(profileForm);
+        
+        fetch(window.location.href, {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                // Update the display values
+                document.getElementById('fullName').textContent = 
+                    `${data.data.first_name} ${data.data.last_name}`;
+                document.getElementById('courseDisplay').textContent = data.data.course;
+                document.getElementById('yearDisplay').textContent = data.data.year_of_study;
+                document.getElementById('phoneDisplay').textContent = data.data.phone || 'Not provided';
+                document.getElementById('regNumberDisplay').textContent = 
+                    data.data.registration_number || 'Not provided';
+                
+                // Switch back to view mode
+                profileView.style.display = 'block';
+                profileEdit.style.display = 'none';
+                editButton.style.display = 'block';
+                
+                // Show success message
+                const alert = document.createElement('div');
+                alert.className = 'alert alert-success alert-dismissible fade show';
+                alert.innerHTML = `
+                    ${data.message}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                `;
+                profileForm.insertBefore(alert, profileForm.firstChild);
+            } else {
+                // Handle errors
+                console.error('Form errors:', data.errors);
+                // Display error messages
+                const alert = document.createElement('div');
+                alert.className = 'alert alert-danger';
+                alert.textContent = data.message;
+                profileForm.insertBefore(alert, profileForm.firstChild);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            // Handle fetch error
+            const alert = document.createElement('div');
+            alert.className = 'alert alert-danger';
+            alert.textContent = 'An error occurred while saving your profile.';
+            profileForm.insertBefore(alert, profileForm.firstChild);
+        });
+    });
+});
+</script>
+{% endblock %}
+{% endblock %} 
